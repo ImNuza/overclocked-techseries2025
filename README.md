@@ -127,6 +127,7 @@ Thanks to the collaborators on this repo:
 - **@sehyuno** (Sehyun Oh)
 - **@Seunghak0401** (Kim Seunghak)
 - **@Xxdsanctuary** (Nathanael Steven Chiang)
+- **@Naitik-J309** (Naitik Jain)
 
 ---
 
