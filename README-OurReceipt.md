@@ -121,16 +121,17 @@ Highlights:
 
 ## Contributors
 Thanks to the collaborators on this repo:
-- **@hackathontechseries2025** *(pending)*
+- **@hackathontechseries2025** 
+- **@ImNuza** (Dewa Bratanusa)
 - **@ownerofanime** (Matthew Tjandera)
-- **@sehyuno** *(pending)*
-- **@Seunghak0401**
+- **@sehyuno** (Sehyun Oh)
+- **@Seunghak0401** (Kim Seunghak)
 - **@Xxdsanctuary** (Nathanael Steven Chiang)
 
 ---
 
 ## License
-(CHANGE) MIT or choose another license.
+None
 
 ---
 
