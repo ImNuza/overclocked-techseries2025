@@ -29,7 +29,7 @@ We use service providers only to operate the app (e.g., cloud hosting, databases
 **Provider list** will be updated in this policy as vendors are added.
 
 ## Storage and security
-- Passwords are stored only as **one‑way salted hashes** (Argon2id/bcrypt).
+- Passwords are stored only as **one‑way salted hashes**.
 - All traffic is protected with **HTTPS/TLS**.
 - Sensitive tokens on device are kept in the **system keychain/secure storage**.
 - Access to production systems is restricted and logged.
