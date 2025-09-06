@@ -99,16 +99,7 @@ Third‑party frameworks seen in code:
 ---
 
 ## Privacy & Security
-Include these in the repo and link them in submissions:
-- `PRIVACY-POLICY-OurReceipt.md`  *(or keep your existing `PRIVACY-POLICY-Our Receipt.md`)*
-- `SECURITY-PLAN-OurReceipt.md`
-
-Highlights:
-- Firebase Auth handles password hashing; all traffic via HTTPS.
-- Tokens stored in iOS **Keychain**.
-- Owner‑only access via Firestore/Storage rules.
-- Deletion/export on request; default 12‑month retention.
-
+- `PRIVACY-POLICY-Our Receipt.md`
 ---
 
 ## Roadmap
