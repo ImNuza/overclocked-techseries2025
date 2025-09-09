@@ -9,10 +9,22 @@ struct ReceiptPreviewView: View {
     let totalAmount: Decimal
     var onSave: (Receipt) -> Void
     
-    @State private var selectedCategory: Category = .other
     @State private var selectedPayment: PaymentMethod = .other
     
     @State private var shareURL: URL? = nil
+
+    private var determinedCategory: Category {
+        guard !orderItems.isEmpty else { return .other }
+        
+        let categories = orderItems.map { $0.product.category }
+        let categoryCounts = Dictionary(grouping: categories, by: { $0 }).mapValues { $0.count }
+        
+        if let mostFrequent = categoryCounts.max(by: { $0.value < $1.value }) {
+            return mostFrequent.key
+        } else {
+            return .other
+        }
+    }
 
     private var finalReceipt: Receipt {
         let receiptItems = orderItems.map {
@@ -28,7 +40,7 @@ struct ReceiptPreviewView: View {
             location: store.merchantProfile?.location,
             amount: finalTotal,
             date: Date(),
-            category: selectedCategory,
+            category: determinedCategory,
             payment: selectedPayment,
             items: receiptItems,
             currency: store.merchantProfile?.defaultCurrency ?? .sgd
@@ -38,22 +50,20 @@ struct ReceiptPreviewView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                ReceiptPDFView(receipt: finalReceipt)
-                
                 Form {
                     Section(header: Text("Details")) {
-                        Picker("Category", selection: $selectedCategory) {
-                            ForEach(Category.allCases) { Text($0.rawValue).tag($0) }
-                        }
                         Picker("Payment Method", selection: $selectedPayment) {
                             ForEach(PaymentMethod.allCases) { Text($0.rawValue).tag($0) }
                         }
                     }
                 }
-                .frame(height: 150)
+                .frame(height: 100)
+                
+                ReceiptPDFView(receipt: finalReceipt)
 
                 Spacer()
             }
+            .padding(.top)
             .navigationTitle("Finalize & Share")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

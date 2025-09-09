@@ -21,14 +21,25 @@ struct ProductCatalogView: View {
             }
             .onDelete(perform: store.deleteProduct)
         }
-        .navigationTitle("Product Catalog")
-        .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                Button(action: { showingAddProductSheet = true }) {
-                    Image(systemName: "plus")
+        .navigationTitle("Product Catalogue")
+        .overlay(
+            VStack {
+                Spacer()
+                HStack {
+                    Spacer()
+                    Button(action: { showingAddProductSheet = true }) {
+                        Image(systemName: "plus")
+                            .font(.system(size: 30))
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Circle().fill(Color.green))
+                            .shadow(radius: 4)
+                    }
+                    .padding(.horizontal, 25)
+                    .padding(.bottom, 25)
                 }
             }
-        }
+        )
         .sheet(isPresented: $showingAddProductSheet) {
             ProductFormView()
         }

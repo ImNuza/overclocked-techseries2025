@@ -19,7 +19,6 @@ struct HomeView: View {
     private var consumerHomeView: some View {
         let last: Receipt? = store.receipts.first
         let others: [Receipt] = Array(store.receipts.dropFirst().prefix(3))
-        
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
@@ -39,31 +38,35 @@ struct HomeView: View {
                         VStack {
                             Image(systemName: "drop.fill")
                                 .font(.title2)
-                                .foregroundColor(Color("ThemeBrown"))
+                                .foregroundColor(Color(.black))
                             Text("\(store.waterSavedInLiters(), specifier: "%.1f") L")
                                 .font(.headline)
                             Text("Water Saved")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                                .foregroundColor(Color(.black))
                         }
                         
                         VStack {
                             Image(systemName: "tree.fill")
                                 .font(.title2)
-                                .foregroundColor(Color("ThemeGreen"))
-                            Text("\(store.treesSaved(), specifier: "%.4f") Trees")
+                                .foregroundColor(Color(.black))
+                            Text("\(store.treesSaved(), specifier: "%.3f") Trees")
                                 .font(.headline)
                             Text("Trees Saved")
                                 .font(.caption)
                                 .foregroundStyle(.secondary)
+                                .foregroundColor(Color(.black))
+                            
+
                         }
                         Spacer()
                     }
                     .padding()
-                    .background(Color(.secondarySystemBackground))
+                    .background(Color(.green))
                     .cornerRadius(10)
                     .padding(.horizontal)
-
+                    
 
                     ForEach(others) { r in
                         NavigationLink(value: r) { SmallReceiptCard(receipt: r) }
@@ -73,10 +76,24 @@ struct HomeView: View {
                 }
                 .padding(.vertical)
             }
+            .padding(.bottom, 96)
+            .overlay(alignment: .bottomTrailing) {
+                Button(action: { showingAddReceipt = true }) {
+                    Image(systemName: "plus")
+                        .font(.system(size: 30))
+                        .foregroundColor(.white)
+                        .frame(width: 56, height: 56)
+                        .background(Circle().fill(Color.green))
+                        .shadow(color: .black.opacity(0.18), radius: 24, x: 0, y: 12)
+                }
+                .padding(.horizontal, 30)
+                .padding(.bottom, 24)
+            }
             .toolbar {
                 ToolbarItem(placement: .principal) {
-                    Text("OURECEIPT 🌳")
-                        .font(.headline)
+                    Text("OUR RECEIPT")
+                        .font(.system(.title, design: .rounded).weight(.semibold))
+                        .foregroundColor(Color(.black))
                         .onTapGesture(count: 5) {
                             if store.appMode == .consumer {
                                 store.appMode = .merchant
@@ -84,9 +101,7 @@ struct HomeView: View {
                                 store.appMode = .consumer
                             }
                         }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showingAddReceipt = true } label: { Image(systemName: "plus") }
+                        .padding(.top,20)
                 }
             }
             .navigationDestination(for: Receipt.self) { r in ReceiptDetailView(receipt: r) }

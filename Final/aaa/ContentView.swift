@@ -196,7 +196,7 @@ struct ReceiptPDFView: View {
                         .resizable()
                         .interpolation(.none)
                         .scaledToFit()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 250, height: 250)
                 }
                 Spacer()
             }
@@ -346,47 +346,76 @@ struct HistoryView: View {
                 }
                 .listStyle(.plain)
 
-                HStack {
-                    Button {
-                        let ids = Set(filtered.map { $0.stableId })
-                        if ids.isSubset(of: selection) { selection.removeAll() }
-                        else { selection = ids }
-                    } label: { Label("Select", systemImage: "checkmark.circle") }
-                    Spacer()
-                    Button {
-                        let picked = store.receipts.filter { selection.contains($0.stableId) }
-                        let csv = CSVBuilder.makeCSV(receipts: picked)
-                        shareURL = TempWriter.write(csv, filename: "receipts-share.csv")
-                    } label: { Label("Share", systemImage: "square.and.arrow.up") }
-                    .disabled(selection.isEmpty)
-                    Spacer()
-                    Button {
-                        store.delete(selection)
-                        selection.removeAll()
-                    } label: { Label("Delete", systemImage: "trash") }
-                    .tint(.red)
-                    .disabled(selection.isEmpty)
-                    Spacer()
-                    Button {
-                        let picked = store.receipts.filter { selection.contains($0.stableId) }
-                        let csv = CSVBuilder.makeCSV(receipts: picked)
-                        shareURL = TempWriter.write(csv, filename: "receipts-export.csv")
-                    } label: { Label("Export", systemImage: "square.and.arrow.up.on.square") }
-                    .disabled(selection.isEmpty)
+                .safeAreaInset(edge: .bottom) {
+                    Group {
+                        if !selection.isEmpty {
+                            HStack(spacing: 16) {
+                                Button {
+                                    let picked = store.receipts.filter { selection.contains($0.stableId) }
+                                    let csv = CSVBuilder.makeCSV(receipts: picked)
+                                    shareURL = TempWriter.write(csv, filename: "receipts-share.csv")
+                                } label: {
+                                    Label("Share", systemImage: "square.and.arrow.up")
+                                        .font(.headline)
+                                }
+
+                                Spacer(minLength: 0)
+
+                                Button(role: .destructive) {
+                                    store.delete(selection)
+                                    selection.removeAll()
+                                } label: {
+                                    Label("Delete", systemImage: "trash")
+                                        .font(.headline)
+                                }
+                            }
+                            .padding(.horizontal, 20)
+                            .padding(.vertical, 12)
+                            .background(.ultraThinMaterial)
+                            .clipShape(RoundedRectangle(cornerRadius: 16))
+                            .padding(.horizontal, 16)
+                            .padding(.bottom, 8)
+                            .transition(.move(edge: .bottom).combined(with: .opacity))
+                        }
+                    }
+                    .animation(.snappy, value: selection)
                 }
-                .padding(.horizontal)
-                .padding(.vertical, 10)
-                .background(.ultraThinMaterial)
-            }
+                }
             .navigationTitle(store.appMode == .consumer ? "Expense Tracker" : "Sales History")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Menu {
+                        Button(selection.isEmpty ? "Select All" : "Clear Selection") {
+                            let ids = Set(filtered.map { $0.stableId })
+                            if ids.isSubset(of: selection) { selection.removeAll() }
+                            else { selection = ids }
+                        }
+
+                        Button("Share", systemImage: "square.and.arrow.up") {
+                            let picked = store.receipts.filter { selection.contains($0.stableId) }
+                            let csv = CSVBuilder.makeCSV(receipts: picked)
+                            shareURL = TempWriter.write(csv, filename: "receipts-share.csv")
+                        }
+                        .disabled(selection.isEmpty)
+
+                        Button("Delete", systemImage: "trash", role: .destructive) {
+                            store.delete(selection)
+                            selection.removeAll()
+                        }
+                        .disabled(selection.isEmpty)
+                    } label: {
+                        Image(systemName: "line.3.horizontal")
+                            .font(.title3)
+                    }
+                }
+
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(action: { showingCalendar = true }) {
                         Image(systemName: "calendar")
                     }
                 }
             }
-            
+                
             .sheet(isPresented: $showingCalendar) {
                 SpendingCalendarView()
             }
